@@ -1,5 +1,22 @@
 const FORK_BOMB_PATTERN = /:\(\)\s*\{\s*:\|:&\s*;\s*\}:\s*;?/
-const DANGEROUS_ROOT_PATHS = new Set(["/", "/*", "/home", "/etc", "/var", "/usr", "/opt", "/bin", "/sbin", "/lib", "/boot"])
+const DANGEROUS_ROOT_PATHS = new Set([
+  "/",
+  "/*",
+  "/home",
+  "/etc",
+  "/var",
+  "/usr",
+  "/opt",
+  "/bin",
+  "/sbin",
+  "/lib",
+  "/boot",
+  "/dev",
+  "/proc",
+  "/sys",
+  "/root",
+  "/tmp",
+])
 
 const defaultOptions = {
   workflowTag: "enhanced-agentic-workflow",
@@ -26,16 +43,16 @@ const mergeOptions = (overrides = {}) => ({
 const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
 
 const isDangerousRmCommand = (command) => {
-  const normalized = command.trim().replace(/\s+/g, " ").toLowerCase()
-  if (!normalized.startsWith("rm ")) return false
-
+  const normalized = command.trim().replace(/\s+/g, " ")
   const tokens = normalized.split(" ")
+  if (tokens[0]?.toLowerCase() !== "rm") return false
+
   const flags = tokens.filter((token) => token.startsWith("-")).join("")
-  const hasRecursive = flags.includes("r")
-  const hasForce = flags.includes("f")
+  const hasRecursive = /r/i.test(flags)
+  const hasForce = /f/i.test(flags)
   if (!hasRecursive || !hasForce) return false
 
-  return tokens.some((token) => DANGEROUS_ROOT_PATHS.has(token))
+  return tokens.some((token) => DANGEROUS_ROOT_PATHS.has(token.toLowerCase()))
 }
 
 const matchesBlockedPattern = (command, pattern) => {
@@ -47,7 +64,7 @@ const matchesBlockedPattern = (command, pattern) => {
     const normalizedCommand = command.trim().replace(/\s+/g, " ").toLowerCase()
     const normalizedPattern = pattern.trim().replace(/\s+/g, " ").toLowerCase()
     if (normalizedPattern.length === 0) return false
-    const boundaryPattern = new RegExp(`(^|\\s|[;&|])${escapeRegExp(normalizedPattern)}($|\\s|[;&|])`, "i")
+    const boundaryPattern = new RegExp(`(^|\\s|[;&|\\\`]|\\$\\()${escapeRegExp(normalizedPattern)}($|\\s|[;&|\\\`]|\\))`, "i")
     return boundaryPattern.test(normalizedCommand)
   }
 
