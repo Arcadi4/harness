@@ -15,8 +15,9 @@ const DANGEROUS_ROOT_PATHS = new Set([
   "/proc",
   "/sys",
   "/root",
-  "/tmp",
 ])
+const COMMAND_BOUNDARY_START = "(^|\\s|[;&|`]|\\$\\()"
+const COMMAND_BOUNDARY_END = "($|\\s|[;&|`]|\\))"
 
 const defaultOptions = {
   workflowTag: "enhanced-agentic-workflow",
@@ -64,7 +65,7 @@ const matchesBlockedPattern = (command, pattern) => {
     const normalizedCommand = command.trim().replace(/\s+/g, " ").toLowerCase()
     const normalizedPattern = pattern.trim().replace(/\s+/g, " ").toLowerCase()
     if (normalizedPattern.length === 0) return false
-    const boundaryPattern = new RegExp(`(^|\\s|[;&|\\\`]|\\$\\()${escapeRegExp(normalizedPattern)}($|\\s|[;&|\\\`]|\\))`, "i")
+    const boundaryPattern = new RegExp(`${COMMAND_BOUNDARY_START}${escapeRegExp(normalizedPattern)}${COMMAND_BOUNDARY_END}`, "i")
     return boundaryPattern.test(normalizedCommand)
   }
 
