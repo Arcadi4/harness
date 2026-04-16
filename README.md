@@ -10,9 +10,9 @@ This repository now includes a starter OpenCode plugin scaffold designed for enh
 
 ### Files
 
-- `/home/runner/work/harness/harness/.opencode/opencode.json` - sample plugin registration in OpenCode config
-- `/home/runner/work/harness/harness/.opencode/plugins/enhanced-agentic-workflow.js` - extensible plugin scaffold
-- `/home/runner/work/harness/harness/.opencode/plugins/enhanced-agentic-workflow.example.js` - example customization
+- `.opencode/opencode.json` - sample plugin registration in OpenCode config
+- `.opencode/plugins/enhanced-agentic-workflow.js` - extensible plugin scaffold
+- `.opencode/plugins/enhanced-agentic-workflow.example.js` - example customization
 
 ### What the scaffold includes
 

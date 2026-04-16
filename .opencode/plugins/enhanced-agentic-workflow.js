@@ -1,6 +1,10 @@
 const defaultOptions = {
   workflowTag: "enhanced-agentic-workflow",
-  blockedCommandPatterns: ["rm -rf /", "mkfs", ":(){ :|:& };:"],
+  blockedCommandPatterns: [
+    /\brm\s+-rf\s+\/(?:\s|$)/i,
+    /\bmkfs(?:\.[\w-]+)?(?:\s|$)/i,
+    /:\(\)\s*\{\s*:\|:&\s*;\s*\}:\s*;?/,
+  ],
   injectEnv: {},
   extraCompactionContext: [],
   onEvent: undefined,
@@ -15,6 +19,20 @@ const mergeOptions = (overrides = {}) => ({
   injectEnv: overrides.injectEnv ?? defaultOptions.injectEnv,
   extraCompactionContext: overrides.extraCompactionContext ?? defaultOptions.extraCompactionContext,
 })
+
+const matchesBlockedPattern = (command, pattern) => {
+  if (pattern instanceof RegExp) {
+    return pattern.test(command)
+  }
+
+  if (typeof pattern === "string") {
+    const normalizedCommand = command.trim().replace(/\s+/g, " ").toLowerCase()
+    const normalizedPattern = pattern.trim().replace(/\s+/g, " ").toLowerCase()
+    return normalizedPattern.length > 0 && normalizedCommand.includes(normalizedPattern)
+  }
+
+  return false
+}
 
 export const createEnhancedAgenticWorkflowPlugin = (pluginOptions = {}) => {
   const options = mergeOptions(pluginOptions)
@@ -53,18 +71,18 @@ export const createEnhancedAgenticWorkflowPlugin = (pluginOptions = {}) => {
         if (input.tool !== "bash") return
 
         const command = String(input?.arguments?.command ?? "")
+        const matchedPattern = options.blockedCommandPatterns.find((pattern) => matchesBlockedPattern(command, pattern))
+        if (matchedPattern) {
+          throw new Error(
+            `Command blocked by enhanced agentic workflow pattern policy: ${String(matchedPattern)} (command: ${command})`,
+          )
+        }
 
         if (typeof options.shouldBlockCommand === "function") {
           const shouldBlock = await options.shouldBlockCommand(command, input, { directory, worktree, client, options })
           if (shouldBlock) {
-            throw new Error("Command blocked by enhanced agentic workflow policy")
+            throw new Error(`Command blocked by enhanced agentic workflow custom policy (command: ${command})`)
           }
-          return
-        }
-
-        const blocked = options.blockedCommandPatterns.some((pattern) => command.includes(pattern))
-        if (blocked) {
-          throw new Error("Command blocked by enhanced agentic workflow policy")
         }
       },
 
