@@ -22,7 +22,6 @@ const COMMAND_BOUNDARY_END = "($|\\s|[;&|`]|\\))"
 const defaultOptions = {
   workflowTag: "enhanced-agentic-workflow",
   blockedCommandPatterns: [
-    /\brm\s+-rf\s+\/(?:\s|$)/i,
     /\bmkfs(?:\.[\w-]+)?(?:\s|$)/i,
     FORK_BOMB_PATTERN,
   ],
@@ -53,7 +52,11 @@ const isDangerousRmCommand = (command) => {
   const hasForce = /f/i.test(flags)
   if (!hasRecursive || !hasForce) return false
 
-  return tokens.some((token) => DANGEROUS_ROOT_PATHS.has(token.toLowerCase()))
+  return tokens.some((token) => {
+    const normalizedToken = token.toLowerCase().replace(/\/+/g, "/").replace(/\/+$/, "") || "/"
+    const normalizedWildcardToken = normalizedToken.endsWith("/*") ? normalizedToken.slice(0, -2) || "/" : normalizedToken
+    return DANGEROUS_ROOT_PATHS.has(normalizedToken) || DANGEROUS_ROOT_PATHS.has(normalizedWildcardToken)
+  })
 }
 
 const matchesBlockedPattern = (command, pattern) => {
