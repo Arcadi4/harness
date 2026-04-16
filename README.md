@@ -34,4 +34,6 @@ This repository now includes a starter OpenCode plugin scaffold designed for enh
 }
 ```
 
+`plugin` is an array, so you can register multiple plugins in load order.
+
 3. Customize behavior by exporting your own plugin via `createEnhancedAgenticWorkflowPlugin(...)` as shown in `enhanced-agentic-workflow.example.js`.

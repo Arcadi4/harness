@@ -1,9 +1,11 @@
+const FORK_BOMB_PATTERN = /:\(\)\s*\{\s*:\|:&\s*;\s*\}:\s*;?/
+
 const defaultOptions = {
   workflowTag: "enhanced-agentic-workflow",
   blockedCommandPatterns: [
     /\brm\s+-rf\s+\/(?:\s|$)/i,
     /\bmkfs(?:\.[\w-]+)?(?:\s|$)/i,
-    /:\(\)\s*\{\s*:\|:&\s*;\s*\}:\s*;?/,
+    FORK_BOMB_PATTERN,
   ],
   injectEnv: {},
   extraCompactionContext: [],
@@ -100,7 +102,17 @@ export const createEnhancedAgenticWorkflowPlugin = (pluginOptions = {}) => {
           .map((item) => `- ${item}`)
           .join("\n")
 
-        output.context.push(`\n## Enhanced Agentic Workflow State\n- Workflow tag: ${options.workflowTag}\n- Worktree: ${worktree}\n- Directory: ${directory}${extra ? `\n${extra}` : ""}\n`)
+        output.context.push(
+          [
+            "",
+            "## Enhanced Agentic Workflow State",
+            `- Workflow tag: ${options.workflowTag}`,
+            `- Worktree: ${worktree}`,
+            `- Directory: ${directory}`,
+            ...(extra ? [extra] : []),
+            "",
+          ].join("\n"),
+        )
       },
 
       "session.idle": async () => {
