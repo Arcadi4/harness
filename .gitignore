@@ -1,0 +1,10 @@
+# agent states and docs
+.agent
+.opencode
+.sisyphus
+.codex
+.claude
+docs/superpowers
+
+# js
+node_modules
