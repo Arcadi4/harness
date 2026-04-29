@@ -16,8 +16,14 @@
     }
   },
   "scripts": {
-    "check": "tsc --noEmit",
-    "build": "bun build src/index.ts --outdir dist --target bun --format esm && tsc --emitDeclarationOnly",
+    "typecheck": "tsc --noEmit",
+    "lint": "oxlint src scripts",
+    "lint:fix": "oxlint src scripts --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "test": "vitest",
+    "build": "bun build src/index.ts --outdir dist --target bun --format esm && bun build src/server.ts --outdir dist --target bun --format esm && bun build src/tui.ts --outdir dist --target bun --format esm && tsc --emitDeclarationOnly",
+    "verify": "bun run format:check && bun run lint && bun run typecheck && bun test && bun run build",
     "clean": "rm -rf dist",
     "prepare": "bun run build"
   },
