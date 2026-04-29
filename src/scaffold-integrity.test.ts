@@ -35,7 +35,14 @@ import {
 } from "./materialization"
 import { syncFiles, type SyncEngine } from "./materialization/sync"
 import { renderAgentDefinition, type Renderer } from "./materialization/renderer"
-import { createOpenCodeAdapter, type OpenCodeAdapter } from "./materialization/opencode-adapter"
+import {
+  generateOpenCodeDescriptors,
+  validateDescriptorCount,
+  validateHarnessPrefix,
+  validateSafeIds,
+  verifyDeterministic,
+  type OpenCodeAgentDescriptor,
+} from "./materialization/opencode-adapter"
 
 describe("scaffold integrity", () => {
   describe("module imports", () => {
@@ -707,8 +714,16 @@ describe("scaffold integrity", () => {
     })
 
     it("imports opencode-adapter module", () => {
-      expect(createOpenCodeAdapter).toBeDefined()
-      expect(typeof createOpenCodeAdapter).toBe("function")
+      expect(generateOpenCodeDescriptors).toBeDefined()
+      expect(typeof generateOpenCodeDescriptors).toBe("function")
+      expect(validateDescriptorCount).toBeDefined()
+      expect(typeof validateDescriptorCount).toBe("function")
+      expect(validateHarnessPrefix).toBeDefined()
+      expect(typeof validateHarnessPrefix).toBe("function")
+      expect(validateSafeIds).toBeDefined()
+      expect(typeof validateSafeIds).toBe("function")
+      expect(verifyDeterministic).toBeDefined()
+      expect(typeof verifyDeterministic).toBe("function")
     })
 
     it("validates TargetConfig schema", () => {
@@ -737,10 +752,27 @@ describe("scaffold integrity", () => {
       expect(backup).toBe("backup")
     })
 
-    it("creates opencode adapter instance", () => {
-      const adapter: OpenCodeAdapter = createOpenCodeAdapter()
-      expect(adapter.install).toBeDefined()
-      expect(adapter.uninstall).toBeDefined()
+    it("generates opencode agent descriptors", () => {
+      const descriptors: OpenCodeAgentDescriptor[] = generateOpenCodeDescriptors()
+      expect(descriptors).toBeDefined()
+      expect(Array.isArray(descriptors)).toBe(true)
+
+      // Validate descriptor count
+      const countResult = validateDescriptorCount(descriptors)
+      expect(countResult.valid).toBe(true)
+      expect(countResult.actual).toBe(15)
+
+      // Validate harness prefix
+      const prefixResult = validateHarnessPrefix(descriptors)
+      expect(prefixResult.valid).toBe(true)
+      expect(prefixResult.invalidIds).toHaveLength(0)
+
+      // Validate safe IDs
+      const safeResult = validateSafeIds(descriptors)
+      expect(safeResult.valid).toBe(true)
+
+      // Verify deterministic generation
+      expect(verifyDeterministic()).toBe(true)
     })
   })
 })
