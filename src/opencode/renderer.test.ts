@@ -1,4 +1,4 @@
-import { describe, expect, it } from "bun:test"
+import { describe, expect, it } from "vitest"
 
 import { renderAgentDefinition } from "./renderer"
 import type { OpenCodeAgentDescriptor } from "./opencode-adapter"
@@ -11,7 +11,7 @@ const source: GeneratedFileMeta = {
 }
 
 const descriptor: OpenCodeAgentDescriptor = {
-  id: "harness-tester",
+  id: "arcadia-tester",
   roleId: "role:tester",
   description: "Checks implementation behavior without taking ownership.",
   category: "subagent",
@@ -27,7 +27,7 @@ describe("OpenCode agent renderer markdown contract", () => {
   it("renders YAML frontmatter with description and mode", () => {
     const markdown = renderDescriptor(descriptor)
 
-    expect(markdown).toStartWith("---\n")
+    expect(markdown.startsWith("---\n")).toBe(true)
     expect(markdown).toContain(
       'description: "Checks implementation behavior without taking ownership."'
     )

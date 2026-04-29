@@ -319,7 +319,9 @@ export function buildExplicitAgentSyncPlan(input: ExplicitAgentSyncInput): Expli
   }
 }
 
-export async function syncExplicitAgentDefinitions(plan: ExplicitAgentSyncPlan): Promise<SyncResult> {
+export async function syncExplicitAgentDefinitions(
+  plan: ExplicitAgentSyncPlan
+): Promise<SyncResult> {
   const descriptors = generateOpenCodeDescriptors()
 
   const target: TargetConfig = {

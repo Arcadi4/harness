@@ -1,4 +1,4 @@
-import { describe, expect, it } from "bun:test"
+import { describe, expect, it } from "vitest"
 import {
   generateOpenCodeDescriptors,
   validateDescriptorCount,
@@ -17,7 +17,7 @@ describe("opencode-adapter", () => {
     expect(result.expected).toBe(15)
   })
 
-  it("all descriptors have harness- prefix", () => {
+  it("all descriptors have arcadia- prefix", () => {
     const descriptors = generateOpenCodeDescriptors()
     const result = validateHarnessPrefix(descriptors)
 
@@ -38,37 +38,37 @@ describe("opencode-adapter", () => {
     expect(result).toBe(true)
   })
 
-  it("descriptor id matches harness-{rolename} format", () => {
+  it("descriptor id matches arcadia-{rolename} format", () => {
     const descriptors = generateOpenCodeDescriptors()
     const ids = descriptors.map((d) => d.id)
 
-    expect(ids).toContain("harness-architect")
-    expect(ids).toContain("harness-planner")
-    expect(ids).toContain("harness-executor")
-    expect(ids).toContain("harness-agile-high")
-    expect(ids).toContain("harness-agile-low")
-    expect(ids).toContain("harness-introspective")
-    expect(ids).toContain("harness-researcher")
-    expect(ids).toContain("harness-explorer")
-    expect(ids).toContain("harness-programmer-low")
-    expect(ids).toContain("harness-programmer-medium")
-    expect(ids).toContain("harness-programmer-high")
-    expect(ids).toContain("harness-multi-modal-assistant")
-    expect(ids).toContain("harness-reviewer")
-    expect(ids).toContain("harness-tester")
-    expect(ids).toContain("harness-documentation")
+    expect(ids).toContain("arcadia-architect")
+    expect(ids).toContain("arcadia-planner")
+    expect(ids).toContain("arcadia-executor")
+    expect(ids).toContain("arcadia-agile-high")
+    expect(ids).toContain("arcadia-agile-low")
+    expect(ids).toContain("arcadia-introspective")
+    expect(ids).toContain("arcadia-researcher")
+    expect(ids).toContain("arcadia-explorer")
+    expect(ids).toContain("arcadia-programmer-low")
+    expect(ids).toContain("arcadia-programmer-medium")
+    expect(ids).toContain("arcadia-programmer-high")
+    expect(ids).toContain("arcadia-multi-modal-assistant")
+    expect(ids).toContain("arcadia-reviewer")
+    expect(ids).toContain("arcadia-tester")
+    expect(ids).toContain("arcadia-documentation")
   })
 
   it("includes roleId from original manifest", () => {
     const descriptors = generateOpenCodeDescriptors()
-    const architect = descriptors.find((d) => d.id === "harness-architect")
+    const architect = descriptors.find((d) => d.id === "arcadia-architect")
 
     expect(architect?.roleId).toBe("role:architect")
   })
 
   it("includes recommendations as metadata, not enforcement", () => {
     const descriptors = generateOpenCodeDescriptors()
-    const architect = descriptors.find((d) => d.id === "harness-architect")
+    const architect = descriptors.find((d) => d.id === "arcadia-architect")
 
     expect(architect?.recommendations).toBeDefined()
     expect(architect?.recommendations?.skills).toContain("brainstorming")
@@ -86,7 +86,7 @@ describe("opencode-adapter", () => {
 
   it("source includes hash for tracking", () => {
     const descriptors = generateOpenCodeDescriptors()
-    const architect = descriptors.find((d) => d.id === "harness-architect")
+    const architect = descriptors.find((d) => d.id === "arcadia-architect")
 
     expect(architect?.source?.hash).toBeDefined()
     expect(architect?.source?.sourceRole).toBe("architect")

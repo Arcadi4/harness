@@ -230,42 +230,42 @@ export async function syncFiles(
               fileResult.operation = "skipped"
               fileResult.reason = "hash unchanged"
               result.skipped++
-      } else {
-        // Changed - update
-        if (dryRun) {
-          fileResult.operation = "updated"
-          fileResult.reason = "dry-run: would update"
-          result.updated++
-        } else {
-          if (overwritePolicy === "error") {
-            fileResult.operation = "refused"
-            fileResult.reason = "no-overwrite policy"
-            result.refused++
-            result.success = false
-          } else {
-            // Create backup if enabled
-            if (backup && overwritePolicy === "backup") {
-              try {
-                const backupPath = await createBackup(filePath)
-                fileResult.backupPath = backupPath
-                result.backups.push(backupPath)
-              } catch (backupError) {
-                fileResult.operation = "refused"
-                fileResult.reason = `backup failed: ${backupError}`
-                result.refused++
-                result.success = false
-                result.files.push(fileResult)
-                continue
+            } else {
+              // Changed - update
+              if (dryRun) {
+                fileResult.operation = "updated"
+                fileResult.reason = "dry-run: would update"
+                result.updated++
+              } else {
+                if (overwritePolicy === "error") {
+                  fileResult.operation = "refused"
+                  fileResult.reason = "no-overwrite policy"
+                  result.refused++
+                  result.success = false
+                } else {
+                  // Create backup if enabled
+                  if (backup && overwritePolicy === "backup") {
+                    try {
+                      const backupPath = await createBackup(filePath)
+                      fileResult.backupPath = backupPath
+                      result.backups.push(backupPath)
+                    } catch (backupError) {
+                      fileResult.operation = "refused"
+                      fileResult.reason = `backup failed: ${backupError}`
+                      result.refused++
+                      result.success = false
+                      result.files.push(fileResult)
+                      continue
+                    }
+                  }
+
+                  // Always use atomic write for updates to protect original file
+                  await atomicWrite(filePath, renderedContent, customWriteFile)
+                  fileResult.operation = "updated"
+                  result.updated++
+                }
               }
             }
-
-            // Always use atomic write for updates to protect original file
-            await atomicWrite(filePath, renderedContent, customWriteFile)
-            fileResult.operation = "updated"
-            result.updated++
-          }
-        }
-      }
           }
         }
       }

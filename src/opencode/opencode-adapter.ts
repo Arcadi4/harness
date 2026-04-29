@@ -1,14 +1,13 @@
 import { roleManifestList } from "../roles"
 import type { RoleManifest } from "../roles/schema"
 import type { GeneratedFileMeta } from "./types"
-import { GeneratedFileMetaSchema } from "./types"
 
 /**
  * Descriptor for a generated OpenCode agent.
  * Renders capability/profile data as recommendation metadata, not policy enforcement.
  */
 export interface OpenCodeAgentDescriptor {
-  /** Unique identifier with harness-* prefix to avoid native agent name collisions */
+  /** Unique identifier with arcadia-* prefix to avoid native agent name collisions */
   id: string
   /** Original role identifier */
   roleId: string
@@ -28,7 +27,7 @@ export interface OpenCodeAgentDescriptor {
 
 /**
  * Generates OpenCode agent descriptors from role manifests.
- * Each descriptor uses harness-* prefix to avoid native agent name collisions.
+ * Each descriptor uses arcadia-* prefix to avoid native agent name collisions.
  */
 export function generateOpenCodeDescriptors(): OpenCodeAgentDescriptor[] {
   return roleManifestList.map((manifest) => mapManifestToDescriptor(manifest))
@@ -38,7 +37,7 @@ export function generateOpenCodeDescriptors(): OpenCodeAgentDescriptor[] {
  * Maps a single role manifest to an OpenCode agent descriptor.
  */
 function mapManifestToDescriptor(manifest: RoleManifest): OpenCodeAgentDescriptor {
-  const id = `harness-${manifest.name}`
+  const id = `arcadia-${manifest.name}`
 
   return {
     id,
@@ -76,9 +75,11 @@ function generateHash(manifest: RoleManifest): string {
 /**
  * Validates descriptor count matches expected 15 (6 primary + 9 subagents).
  */
-export function validateDescriptorCount(
-  descriptors: OpenCodeAgentDescriptor[]
-): { valid: boolean; actual: number; expected: number } {
+export function validateDescriptorCount(descriptors: OpenCodeAgentDescriptor[]): {
+  valid: boolean
+  actual: number
+  expected: number
+} {
   const expected = 15
   const actual = descriptors.length
   return {
@@ -89,14 +90,13 @@ export function validateDescriptorCount(
 }
 
 /**
- * Validates all descriptor IDs have harness- prefix.
+ * Validates all descriptor IDs have arcadia- prefix.
  */
-export function validateHarnessPrefix(
-  descriptors: OpenCodeAgentDescriptor[]
-): { valid: boolean; invalidIds: string[] } {
-  const invalidIds = descriptors
-    .filter((d) => !d.id.startsWith("harness-"))
-    .map((d) => d.id)
+export function validateHarnessPrefix(descriptors: OpenCodeAgentDescriptor[]): {
+  valid: boolean
+  invalidIds: string[]
+} {
+  const invalidIds = descriptors.filter((d) => !d.id.startsWith("arcadia-")).map((d) => d.id)
 
   return {
     valid: invalidIds.length === 0,
@@ -108,13 +108,12 @@ export function validateHarnessPrefix(
  * Validates descriptor IDs contain only safe filename characters.
  * Safe: lowercase letters, numbers, hyphens.
  */
-export function validateSafeIds(
-  descriptors: OpenCodeAgentDescriptor[]
-): { valid: boolean; unsafeIds: string[] } {
+export function validateSafeIds(descriptors: OpenCodeAgentDescriptor[]): {
+  valid: boolean
+  unsafeIds: string[]
+} {
   const safePattern = /^[a-z0-9-]+$/
-  const unsafeIds = descriptors
-    .filter((d) => !safePattern.test(d.id))
-    .map((d) => d.id)
+  const unsafeIds = descriptors.filter((d) => !safePattern.test(d.id)).map((d) => d.id)
 
   return {
     valid: unsafeIds.length === 0,
