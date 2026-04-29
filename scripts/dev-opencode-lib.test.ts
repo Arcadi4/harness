@@ -1,4 +1,4 @@
-import { access, mkdir, rm, writeFile } from "node:fs/promises"
+import { access, mkdir, readdir, readFile, rm, writeFile } from "node:fs/promises"
 import { tmpdir } from "node:os"
 import path from "node:path"
 
@@ -9,7 +9,26 @@ import {
   ensureIsolatedProfile,
   normalizePluginConfig,
   parseLauncherArgs,
+  syncAgentDefinitions,
 } from "./dev-opencode-lib"
+import type { SyncOptions, SyncResult } from "../src/materialization/types"
+
+type ExplicitAgentSyncPlan = {
+  agentsDir: string
+  options: SyncOptions
+  scope: "project" | "global" | "user"
+}
+
+type ExplicitAgentSyncInput = {
+  agentsDir: string
+  force?: boolean
+  scope: "project" | "global" | "user"
+}
+
+type DevLibWithExplicitSync = typeof import("./dev-opencode-lib") & {
+  buildExplicitAgentSyncPlan: (input: ExplicitAgentSyncInput) => ExplicitAgentSyncPlan
+  syncExplicitAgentDefinitions: (plan: ExplicitAgentSyncPlan) => Promise<SyncResult>
+}
 
 describe("parseLauncherArgs", () => {
   it("uses isolated local directory install by default", () => {
@@ -170,6 +189,137 @@ describe("ensureIsolatedProfile", () => {
     }
   })
 })
+
+describe("syncAgentDefinitions", () => {
+  it("materializes dev agents only into the isolated .opencode-dev profile", async () => {
+    const root = path.join(tmpdir(), `harness-opencode-dev-sync-${Date.now()}`)
+    const home = path.join(root, "home")
+
+    await mkdir(path.join(home, ".config", "opencode", "agents"), { recursive: true })
+    await mkdir(path.join(root, ".opencode", "agents"), { recursive: true })
+
+    const previousHome = process.env.HOME
+    process.env.HOME = home
+
+    try {
+      const state = buildLauncherState({
+        installTarball: false,
+        packageName: "harness-runtime",
+        packageVersion: "0.0.0",
+        profileDir: null,
+        rootDir: root,
+        useGlobal: false,
+      })
+
+      await syncAgentDefinitions(state)
+
+      const agentsDir = path.join(root, ".opencode-dev", "config", "opencode", "agents")
+      const generatedAgents = await readdir(agentsDir)
+
+      expect(agentsDir).toBe(path.join(state.configDir, "agents"))
+      expect(generatedAgents.length).toBeGreaterThan(0)
+      await expect(readdir(path.join(home, ".config", "opencode", "agents"))).resolves.toEqual([])
+      await expect(readdir(path.join(root, ".opencode", "agents"))).resolves.toEqual([])
+    } finally {
+      if (previousHome === undefined) {
+        delete process.env.HOME
+      } else {
+        process.env.HOME = previousHome
+      }
+      await rm(root, { force: true, recursive: true })
+    }
+  })
+})
+
+describe("explicit agent sync safety", () => {
+  it("builds explicit target sync plans as dry-run and no-overwrite by default", async () => {
+    const { buildExplicitAgentSyncPlan } = await loadExplicitSyncApi()
+    const agentsDir = path.join(tmpdir(), `harness-explicit-sync-${Date.now()}`, "agents")
+
+    const plan = buildExplicitAgentSyncPlan({ agentsDir, scope: "project" })
+
+    expect(plan).toMatchObject({
+      agentsDir,
+      scope: "project",
+      options: {
+        backup: true,
+        dryRun: true,
+        overwritePolicy: "error",
+      },
+    })
+  })
+
+  it("refuses unmanaged collisions in explicit targets without interactive prompts", async () => {
+    const { buildExplicitAgentSyncPlan, syncExplicitAgentDefinitions } = await loadExplicitSyncApi()
+    const root = path.join(tmpdir(), `harness-explicit-refuse-${Date.now()}`)
+    const agentsDir = path.join(root, "agents")
+    await mkdir(agentsDir, { recursive: true })
+    await writeFile(path.join(agentsDir, "architect.md"), "user-owned content\n")
+
+    try {
+      const plan = buildExplicitAgentSyncPlan({ agentsDir, scope: "project" })
+      const result = await syncExplicitAgentDefinitions({
+        ...plan,
+        options: { ...plan.options, dryRun: false },
+      })
+
+      expect(result.success).toBe(false)
+      expect(result.refused).toBeGreaterThan(0)
+      expect(result.files).toContainEqual(
+        expect.objectContaining({
+          operation: "refused",
+          path: path.join(agentsDir, "architect.md"),
+        })
+      )
+      await expect(readFile(path.join(agentsDir, "architect.md"), "utf8")).resolves.toBe(
+        "user-owned content\n"
+      )
+    } finally {
+      await rm(root, { force: true, recursive: true })
+    }
+  })
+
+  it("backs up unmanaged files before explicit force overwrites", async () => {
+    const { buildExplicitAgentSyncPlan, syncExplicitAgentDefinitions } = await loadExplicitSyncApi()
+    const root = path.join(tmpdir(), `harness-explicit-force-${Date.now()}`)
+    const agentsDir = path.join(root, "agents")
+    const targetFile = path.join(agentsDir, "architect.md")
+    await mkdir(agentsDir, { recursive: true })
+    await writeFile(targetFile, "user-owned content\n")
+
+    try {
+      const plan = buildExplicitAgentSyncPlan({ agentsDir, force: true, scope: "project" })
+      const result = await syncExplicitAgentDefinitions(plan)
+
+      expect(plan.options).toMatchObject({ backup: true, dryRun: false, overwritePolicy: "backup" })
+      expect(result.success).toBe(true)
+      expect(result.backups.length).toBeGreaterThan(0)
+      expect(result.files).toContainEqual(
+        expect.objectContaining({
+          backupPath: expect.any(String),
+          operation: "updated",
+          path: targetFile,
+        })
+      )
+
+      const backupPath = result.files.find((file) => file.path === targetFile)?.backupPath
+      expect(backupPath).toBeDefined()
+      await expect(readFile(backupPath as string, "utf8")).resolves.toBe("user-owned content\n")
+      await expect(readFile(targetFile, "utf8")).resolves.not.toBe("user-owned content\n")
+    } finally {
+      await rm(root, { force: true, recursive: true })
+    }
+  })
+})
+
+async function loadExplicitSyncApi(): Promise<DevLibWithExplicitSync> {
+  const module = (await import("./dev-opencode-lib")) as Partial<DevLibWithExplicitSync>
+
+  expect(typeof module.buildExplicitAgentSyncPlan).toBe("function")
+  expect(typeof module.syncExplicitAgentDefinitions).toBe("function")
+
+  return module as DevLibWithExplicitSync
+}
 
 async function fileExists(filePath: string): Promise<boolean> {
   try {
