@@ -4,6 +4,7 @@ import path from "node:path"
 
 import {
   buildLauncherState,
+  buildPackCommand,
   clearIsolatedPackageCache,
   ensureIsolatedProfile,
   normalizePluginRefs,
@@ -57,7 +58,7 @@ async function main(): Promise<void> {
 
   console.log("==> Packing plugin")
   await rm(state.tarballPath, { force: true })
-  await runCommand(["bun", "pm", "pack"], { cwd: state.rootDir })
+  await runCommand(buildPackCommand(), { cwd: state.rootDir })
 
   await ensureIsolatedProfile(state)
   await syncAgentDefinitions(state)

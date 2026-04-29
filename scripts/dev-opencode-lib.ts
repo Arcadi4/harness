@@ -237,6 +237,10 @@ export async function runCommand(
   }
 }
 
+export function buildPackCommand(bunExecutable = process.execPath): string[] {
+  return [bunExecutable, "pm", "pack"]
+}
+
 async function fileExists(filePath: string): Promise<boolean> {
   try {
     await access(filePath, constants.F_OK)

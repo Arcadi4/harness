@@ -30,6 +30,10 @@ type DevLibWithExplicitSync = typeof import("./dev-opencode-lib") & {
   syncExplicitAgentDefinitions: (plan: ExplicitAgentSyncPlan) => Promise<SyncResult>
 }
 
+type DevLibWithPackCommand = typeof import("./dev-opencode-lib") & {
+  buildPackCommand: (bunExecutable?: string) => string[]
+}
+
 describe("parseLauncherArgs", () => {
   it("uses isolated local directory install by default", () => {
     expect(parseLauncherArgs([])).toEqual({
@@ -228,6 +232,20 @@ describe("syncAgentDefinitions", () => {
       }
       await rm(root, { force: true, recursive: true })
     }
+  })
+})
+
+describe("launcher command safety", () => {
+  it("packs with the active Bun runtime instead of a PATH-resolved bun shim", async () => {
+    const module = (await import("./dev-opencode-lib")) as Partial<DevLibWithPackCommand>
+
+    expect(typeof module.buildPackCommand).toBe("function")
+    expect(module.buildPackCommand?.("/runtime/bin/bun")).toEqual([
+      "/runtime/bin/bun",
+      "pm",
+      "pack",
+    ])
+    expect(module.buildPackCommand?.("/runtime/bin/bun")[0]).not.toBe("bun")
   })
 })
 
