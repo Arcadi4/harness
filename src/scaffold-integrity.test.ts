@@ -21,6 +21,21 @@ import {
   type ExtensionDescriptor,
 } from "./extensions"
 import type { RoleName } from "./types/roles"
+import {
+  TargetConfigSchema,
+  GeneratedFileMetaSchema,
+  CollisionPolicySchema,
+  SyncOptionsSchema,
+  SyncResultSchema,
+  type TargetConfig,
+  type GeneratedFileMeta,
+  type CollisionPolicy,
+  type SyncOptions,
+  type SyncResult,
+} from "./materialization"
+import { syncFiles, type SyncEngine } from "./materialization/sync"
+import { renderAgentDefinition, type Renderer } from "./materialization/renderer"
+import { createOpenCodeAdapter, type OpenCodeAdapter } from "./materialization/opencode-adapter"
 
 describe("scaffold integrity", () => {
   describe("module imports", () => {
@@ -650,6 +665,82 @@ describe("scaffold integrity", () => {
       const manifest: RoleManifest = roleManifestList[0]
       expect(manifest.id).toBeDefined()
       expect(manifest.name).toBeDefined()
+    })
+  })
+
+  describe("materialization module", () => {
+    it("imports materialization types", () => {
+      expect(TargetConfigSchema).toBeDefined()
+      expect(GeneratedFileMetaSchema).toBeDefined()
+      expect(CollisionPolicySchema).toBeDefined()
+      expect(SyncOptionsSchema).toBeDefined()
+      expect(SyncResultSchema).toBeDefined()
+    })
+
+    it("imports materialization type aliases", () => {
+      const target: TargetConfig = { path: "/test", scope: "project" }
+      expect(target.path).toBe("/test")
+      expect(target.scope).toBe("project")
+
+      const meta: GeneratedFileMeta = { hash: "abc123" }
+      expect(meta.hash).toBe("abc123")
+
+      const policy: CollisionPolicy = "overwrite"
+      expect(policy).toBe("overwrite")
+
+      const options: SyncOptions = { dryRun: true, backup: false }
+      expect(options.dryRun).toBe(true)
+      expect(options.backup).toBe(false)
+
+      const result: SyncResult = { success: true, files: [] }
+      expect(result.success).toBe(true)
+    })
+
+    it("imports sync module", () => {
+      expect(syncFiles).toBeDefined()
+      expect(typeof syncFiles).toBe("function")
+    })
+
+    it("imports renderer module", () => {
+      expect(renderAgentDefinition).toBeDefined()
+      expect(typeof renderAgentDefinition).toBe("function")
+    })
+
+    it("imports opencode-adapter module", () => {
+      expect(createOpenCodeAdapter).toBeDefined()
+      expect(typeof createOpenCodeAdapter).toBe("function")
+    })
+
+    it("validates TargetConfig schema", () => {
+      const valid = TargetConfigSchema.parse({ path: "/test", scope: "global" })
+      expect(valid.path).toBe("/test")
+      expect(valid.scope).toBe("global")
+    })
+
+    it("validates SyncOptions schema with defaults", () => {
+      const parsed = SyncOptionsSchema.parse({})
+      expect(parsed.dryRun).toBe(false)
+      expect(parsed.backup).toBe(true)
+      expect(parsed.overwritePolicy).toBe("backup")
+      expect(parsed.verbose).toBe(false)
+    })
+
+    it("validates CollisionPolicy values", () => {
+      const error = CollisionPolicySchema.parse("error")
+      const skip = CollisionPolicySchema.parse("skip")
+      const overwrite = CollisionPolicySchema.parse("overwrite")
+      const backup = CollisionPolicySchema.parse("backup")
+
+      expect(error).toBe("error")
+      expect(skip).toBe("skip")
+      expect(overwrite).toBe("overwrite")
+      expect(backup).toBe("backup")
+    })
+
+    it("creates opencode adapter instance", () => {
+      const adapter: OpenCodeAdapter = createOpenCodeAdapter()
+      expect(adapter.install).toBeDefined()
+      expect(adapter.uninstall).toBeDefined()
     })
   })
 })
