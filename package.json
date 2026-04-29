@@ -16,16 +16,19 @@
     }
   },
   "scripts": {
-    "typecheck": "tsc --noEmit",
-    "lint": "oxlint src scripts",
-    "lint:fix": "oxlint src scripts --fix",
+    "typecheck": "tsc --project tsconfig.check.json --noEmit",
+    "check": "bun run typecheck",
+    "lint": "GIT_MASTER=1 git ls-files -z 'src/**/*.ts' 'scripts/**/*.ts' | xargs -0 oxlint",
+    "lint:fix": "GIT_MASTER=1 git ls-files -z 'src/**/*.ts' 'scripts/**/*.ts' | xargs -0 oxlint --fix",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "test": "vitest",
-    "build": "bun build src/index.ts --outdir dist --target bun --format esm && bun build src/server.ts --outdir dist --target bun --format esm && bun build src/tui.ts --outdir dist --target bun --format esm && tsc --emitDeclarationOnly",
-    "verify": "bun run format:check && bun run lint && bun run typecheck && bun test && bun run build",
+    "build": "rm -rf dist && bun build src/index.ts --outdir dist --target bun --format esm && bun build src/server.ts --outdir dist --target bun --format esm && bun build src/tui.ts --outdir dist --target bun --format esm && tsc --emitDeclarationOnly",
+    "verify": "bun run format:check && bun run lint && bun run typecheck && bun run test && bun run build",
     "clean": "rm -rf dist",
-    "prepare": "bun run build"
+    "prepare": "bun run build",
+    "dev:opencode": "bun ./scripts/dev-opencode.ts",
+    "dev:opencode:check": "bun ./scripts/dev-opencode.ts --run 'verification ping'"
   },
   "dependencies": {
     "@opencode-ai/plugin": "^1.14.29",

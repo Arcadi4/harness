@@ -8,6 +8,7 @@
     "perf": "warn"
   },
   "rules": {
-    "no-console": "off"
+    "no-console": "off",
+    "unicorn/no-array-sort": "off"
   }
 }
