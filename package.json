@@ -16,18 +16,19 @@
     }
   },
   "scripts": {
+    "check": "$npm_execpath run typecheck && $npm_execpath run lint",
     "typecheck": "tsc --project tsconfig.check.json --noEmit",
     "lint": "git ls-files -z --cached --others --exclude-standard 'src/**/*.ts' 'scripts/**/*.ts' | xargs -0 oxlint",
     "lint:fix": "git ls-files -z --cached --others --exclude-standard 'src/**/*.ts' 'scripts/**/*.ts' | xargs -0 oxlint --fix",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "test": "vitest",
-    "build": "rm -rf dist && bun build src/index.ts --outdir dist --target bun --format esm && bun build src/server.ts --outdir dist --target bun --format esm && bun build src/tui.ts --outdir dist --target bun --format esm && tsc --emitDeclarationOnly",
-    "verify": "bun run format:check && bun run lint && bun run typecheck && bun run test && bun run build",
+    "build": "rm -rf dist && $npm_execpath build src/index.ts --outdir dist --target bun --format esm && $npm_execpath build src/server.ts --outdir dist --target bun --format esm && $npm_execpath build src/tui.ts --outdir dist --target bun --format esm && tsc --emitDeclarationOnly",
+    "verify": "$npm_execpath run format:check && $npm_execpath run lint && $npm_execpath run typecheck && $npm_execpath run test && $npm_execpath run build",
     "clean": "rm -rf dist",
-    "prepare": "bun run build",
-    "dev:opencode": "bun ./scripts/dev-opencode.ts",
-    "dev:opencode:check": "bun ./scripts/dev-opencode.ts --run 'verification ping'"
+    "prepare": "$npm_execpath run build",
+    "dev:opencode": "$npm_execpath ./scripts/dev-opencode.ts",
+    "dev:opencode:check": "$npm_execpath ./scripts/dev-opencode.ts --run 'verification ping'"
   },
   "dependencies": {
     "@opencode-ai/plugin": "^1.14.29",
@@ -35,7 +36,6 @@
   },
   "devDependencies": {
     "@types/bun": "^1.3.13",
-    "bun": "^1.3.13",
     "oxlint": "^1.62.0",
     "prettier": "^3.8.3",
     "typescript": "^6.0.3"
