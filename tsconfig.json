@@ -12,7 +12,9 @@
     "outDir": "dist",
     "verbatimModuleSyntax": true,
     "skipLibCheck": true,
-    "noEmitOnError": true
+    "noEmitOnError": true,
+    "types": ["bun"]
   },
-  "include": ["src/**/*.ts"]
+  "include": ["src/**/*.ts"],
+  "exclude": ["src/__tests__/**/*.ts"]
 }

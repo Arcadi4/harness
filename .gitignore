@@ -9,7 +9,10 @@ docs/private
 # opencode runtime artifacts
 .opencode/node_modules
 .opencode/dist
+.opencode-dev/
 
 # js
 node_modules
 dist
+coverage/
+*.tgz
