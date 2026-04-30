@@ -6,7 +6,7 @@ import {
   buildReminder,
   executionPrompt,
   planningPrompt,
-} from "../prompts"
+} from "./index"
 
 describe("prompt builder", () => {
   it("renders planning prompts deterministically", () => {

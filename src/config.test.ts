@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest"
-import { HarnessPluginConfigSchema, loadConfig } from "../config"
-import type { HarnessPluginConfig } from "../config"
+import { HarnessPluginConfigSchema, loadConfig } from "./config"
+import type { HarnessPluginConfig } from "./config"
 
 describe("HarnessPluginConfig", () => {
   describe("default config parsing", () => {

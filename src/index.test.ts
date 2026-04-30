@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest"
-import * as harness from "../index"
+import * as harness from "./index"
 
 describe("HarnessPlugin exports", () => {
   it("exports HarnessPlugin as named export", () => {

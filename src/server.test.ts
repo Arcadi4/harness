@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest"
-import * as server from "../server"
+import * as server from "./server"
 
 describe("server entrypoint exports", () => {
   it("imports without executing the plugin and exposes the server plugin", () => {

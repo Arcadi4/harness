@@ -6,7 +6,7 @@ import {
   exampleHookDescriptor,
   exampleToolDescriptor,
   ExtensionDescriptorSchema,
-} from "../extensions"
+} from "./index"
 
 describe("extension descriptors", () => {
   it("validates command, tool, and hook examples", () => {

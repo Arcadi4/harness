@@ -9,7 +9,7 @@ import {
   ensureIsolatedProfile,
   normalizePluginConfig,
   parseLauncherArgs,
-} from "../../scripts/dev-opencode-lib"
+} from "./dev-opencode-lib"
 
 describe("parseLauncherArgs", () => {
   it("uses isolated local directory install by default", () => {

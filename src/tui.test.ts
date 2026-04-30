@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest"
 
 describe("TUI entrypoint", () => {
   it("exports descriptor examples without launching interactive UI", async () => {
-    const tuiModule: Record<string, unknown> = await import("../tui")
+    const tuiModule: Record<string, unknown> = await import("./tui")
 
     const tuiCommandDescriptors = tuiModule.tuiCommandDescriptors
     const tuiRouteDescriptors = tuiModule.tuiRouteDescriptors
@@ -42,7 +42,7 @@ describe("TUI entrypoint", () => {
   })
 
   it("keeps the TUI module limited to descriptor exports", async () => {
-    const tuiModule = await import("../tui")
+    const tuiModule = await import("./tui")
 
     expect(Object.keys(tuiModule).sort()).toEqual([
       "tuiCommandDescriptors",

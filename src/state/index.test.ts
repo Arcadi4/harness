@@ -9,7 +9,7 @@ import {
   serializeBackgroundTaskHandle,
   serializeEvidenceReference,
   serializeSessionRecord,
-} from "../state"
+} from "./index"
 import { createEvidenceId, createSessionId, createTaskId } from "../types/ids"
 import type {
   ActiveWorkState,
@@ -20,7 +20,7 @@ import type {
   SessionRecord,
   TaskProgress,
   WorkPlan,
-} from "../state"
+} from "./index"
 
 describe("state type surfaces", () => {
   it("exports versioned, namespaced metadata with bounded polling limits", () => {

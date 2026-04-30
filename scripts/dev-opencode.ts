@@ -9,6 +9,7 @@ import {
   normalizePluginRefs,
   parseLauncherArgs,
   runCommand,
+  syncAgentDefinitions,
 } from "./dev-opencode-lib.ts"
 
 function printUsage(): void {
@@ -59,6 +60,7 @@ async function main(): Promise<void> {
   await runCommand(["bun", "pm", "pack"], { cwd: state.rootDir })
 
   await ensureIsolatedProfile(state)
+  await syncAgentDefinitions(state)
   await clearIsolatedPackageCache(state)
 
   await normalizePluginRefs(path.join(state.configDir, "opencode.json"), state)

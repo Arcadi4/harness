@@ -2,6 +2,8 @@ import { constants } from "node:fs"
 import { access, mkdir, readFile, rm, writeFile } from "node:fs/promises"
 import path from "node:path"
 
+import { roleManifestList, type RoleManifest } from "../src/roles"
+
 export type LauncherArgs = {
   installTarball: boolean
   noLaunch: boolean
@@ -160,6 +162,17 @@ export async function ensureIsolatedProfile(state: LauncherState): Promise<void>
   ])
 }
 
+export async function syncAgentDefinitions(state: LauncherState): Promise<void> {
+  const agentsDir = path.join(state.configDir, "agents")
+  await mkdir(agentsDir, { recursive: true })
+
+  await Promise.all(
+    roleManifestList.map((manifest) =>
+      writeFile(path.join(agentsDir, `${manifest.name}.md`), renderAgentDefinition(manifest))
+    )
+  )
+}
+
 export async function clearIsolatedPackageCache(state: LauncherState): Promise<void> {
   if (state.useGlobal) return
   await rm(path.join(state.cacheDir, "packages"), { force: true, recursive: true })
@@ -203,4 +216,31 @@ async function fileExists(filePath: string): Promise<boolean> {
   } catch {
     return false
   }
+}
+
+function renderAgentDefinition(manifest: RoleManifest): string {
+  return `---
+description: ${quoteYamlString(manifest.description)}
+mode: ${manifest.category}
+---
+# ${manifest.neutralName}
+
+${manifest.description}
+
+## Recommended capabilities
+- Reasoning: ${manifest.recommendedCapabilities.reasoningLevel}
+- Tool use: ${manifest.recommendedCapabilities.toolUseLevel}
+- Context: ${manifest.recommendedCapabilities.contextWindow}
+
+## Guidance
+${manifest.delegationGuidance.guidance}
+
+## Scope notes
+- Skill and tool entries in the scaffold are recommendations, not enforced permissions.
+- Follow the user's current task over this generated role summary when they conflict.
+`
+}
+
+function quoteYamlString(value: string): string {
+  return JSON.stringify(value)
 }

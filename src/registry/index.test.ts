@@ -13,7 +13,7 @@ import {
   exampleCommandDescriptor,
   exampleToolDescriptor,
   exampleHookDescriptor,
-} from "../registry"
+} from "./index"
 
 describe("registry exports", () => {
   it("exports all role manifest functions", () => {

@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest"
-import { roleDefinitions } from "../types/roles"
-import { RoleManifestSchema, roleManifests, roleManifestList, type RoleManifest } from "../roles"
-import { HarnessPluginConfigSchema, loadConfig, type HarnessPluginConfig } from "../config"
+import { roleDefinitions } from "./types/roles"
+import { RoleManifestSchema, roleManifests, roleManifestList, type RoleManifest } from "./roles"
+import { HarnessPluginConfigSchema, loadConfig, type HarnessPluginConfig } from "./config"
 import {
   buildPrompt,
   buildPromptSections,
@@ -11,7 +11,7 @@ import {
   planningPrompt,
   type PromptModule,
   type DirectiveOptions,
-} from "../prompts"
+} from "./prompts"
 import {
   createExtensionRegistry,
   ExtensionDescriptorSchema,
@@ -19,8 +19,8 @@ import {
   ToolDescriptorSchema,
   HookDescriptorSchema,
   type ExtensionDescriptor,
-} from "../extensions"
-import type { RoleName } from "../types/roles"
+} from "./extensions"
+import type { RoleName } from "./types/roles"
 
 describe("scaffold integrity", () => {
   describe("module imports", () => {
