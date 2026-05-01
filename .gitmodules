@@ -1,0 +1,3 @@
+[submodule "vendor/opencode-dynamic-context-pruning"]
+	path = vendor/opencode-dynamic-context-pruning
+	url = https://github.com/Opencode-DCP/opencode-dynamic-context-pruning

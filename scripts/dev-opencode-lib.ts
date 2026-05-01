@@ -3,6 +3,8 @@ import { access, mkdir, readFile, rm, writeFile } from "node:fs/promises"
 import { homedir } from "node:os"
 import path from "node:path"
 
+import { loadConfig } from "../src/config"
+import { prepareDCP } from "../src/dcp/launch"
 import { generateOpenCodeDescriptors } from "../src/opencode/opencode-adapter"
 import { syncFiles } from "../src/opencode/sync"
 import type { SyncOptions, SyncResult, TargetConfig } from "../src/opencode/types"
@@ -176,6 +178,16 @@ export async function ensureIsolatedProfile(state: LauncherState): Promise<void>
     mkdir(state.dataDir, { recursive: true }),
     mkdir(state.cacheDir, { recursive: true }),
   ])
+}
+
+export async function prepareDCPForLaunch(state: LauncherState): Promise<void> {
+  const config = loadConfig()
+
+  await prepareDCP({
+    config,
+    configDir: state.configDir,
+    rootDir: state.rootDir,
+  })
 }
 
 export async function syncAgentDefinitions(state: LauncherState): Promise<void> {

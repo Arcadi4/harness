@@ -9,6 +9,7 @@ import {
   ensureIsolatedProfile,
   normalizePluginRefs,
   parseLauncherArgs,
+  prepareDCPForLaunch,
   runCommand,
   syncAgentDefinitions,
 } from "./dev-opencode-lib.ts"
@@ -61,6 +62,7 @@ async function main(): Promise<void> {
   await runCommand(buildPackCommand(), { cwd: state.rootDir })
 
   await ensureIsolatedProfile(state)
+  await prepareDCPForLaunch(state)
   await syncAgentDefinitions(state)
   await clearIsolatedPackageCache(state)
 
