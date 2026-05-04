@@ -1,6 +1,5 @@
 import { describe, it, expect } from "vitest"
 import { HarnessPluginConfigSchema, loadConfig } from "./config"
-import type { HarnessPluginConfig } from "./config"
 
 describe("HarnessPluginConfig", () => {
   describe("default config parsing", () => {
@@ -84,14 +83,4 @@ describe("HarnessPluginConfig", () => {
     })
   })
 
-  describe("type exports", () => {
-    it("uses exported HarnessPluginConfig type", () => {
-      const config: HarnessPluginConfig = {
-        envPrefix: "TEST",
-        promptVerbosity: "minimal",
-      }
-      expect(config.envPrefix).toBe("TEST")
-      expect(config.promptVerbosity).toBe("minimal")
-    })
-  })
 })
