@@ -20,3 +20,4 @@ coverage/
 
 # os
 .DS_Store
+.gitnexus
