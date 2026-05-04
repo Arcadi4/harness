@@ -1,10 +1,10 @@
 import type { Plugin } from "@opencode-ai/plugin"
 
-import { loadConfig } from "./config"
+import { loadConfig } from "./config/index"
 import { createShellEnvHook } from "./hooks/shell-env"
 
-export { HarnessPluginConfigSchema, loadConfig } from "./config"
-export type { HarnessPluginConfig } from "./config"
+export { HarnessPluginConfigSchema, loadConfig } from "./config/index"
+export type { HarnessPluginConfig } from "./config/index"
 export { getRoleManifest, roleManifestList, roleManifests } from "./roles"
 export type { RoleManifest, RoleManifestInput } from "./roles"
 export {

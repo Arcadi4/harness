@@ -1,6 +1,6 @@
 import type { Plugin } from "@opencode-ai/plugin"
 
-import { loadConfig } from "./config"
+import { loadConfig } from "./config/index"
 import { createHarnessContextTool } from "./features/harness-context"
 import { createConfigHook } from "./hooks/config"
 import { createShellEnvHook } from "./hooks/shell-env"
