@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it } from "bun:test"
-import { mkdir, mkdtemp, rm, writeFile } from "node:fs/promises"
+import { mkdir, mkdtemp, rm, utimes, writeFile } from "node:fs/promises"
 import { tmpdir } from "node:os"
 import { join } from "node:path"
 
@@ -73,6 +73,21 @@ describe("/exec command hook", () => {
     const resolution = await resolveExecPlanPath(createContext(root), "")
 
     expect(resolution).toEqual({ planPath: newest, source: "newest" })
+  })
+
+  it("refuses to guess when multiple plans share newest mtime", async () => {
+    const root = await createWorkspace()
+    const plan1 = join(root, ".modus/plans/plan-a.md")
+    const plan2 = join(root, ".modus/plans/plan-b.md")
+    await writeFile(plan1, "# Plan A\n", "utf8")
+    await writeFile(plan2, "# Plan B\n", "utf8")
+    const fixedTime = new Date("2026-01-01T00:00:00.000Z")
+    await utimes(plan1, fixedTime, fixedTime)
+    await utimes(plan2, fixedTime, fixedTime)
+
+    await expect(resolveExecPlanPath(createContext(root), "")).rejects.toThrow(
+      /Ambiguous default plan; multiple plans share newest mtime/,
+    )
   })
 })
 
