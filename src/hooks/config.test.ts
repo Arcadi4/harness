@@ -29,6 +29,12 @@ describe("createConfigHook", () => {
       mode: "primary",
       prompt: expect.stringContaining("# Executor"),
     })
+
+    expect(config.command?.exec).toMatchObject({
+      description: "Execute a Modus plan with the Executor agent. Usage: /exec [plan-path]",
+      agent: "executor",
+      template: expect.stringContaining("explicit /exec path, .modus/current-plan pointer"),
+    })
   })
 
   it("preserves existing workflow agent config fields while refreshing generated fields", async () => {

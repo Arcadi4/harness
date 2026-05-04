@@ -11,9 +11,22 @@ import { generateWorkflowAgentDescriptors } from "../opencode/opencode-adapter"
  */
 const DEFAULT_OPENCODE_AGENTS = ["general", "plan", "build", "explore"] as const
 
+const EXEC_COMMAND_TEMPLATE = [
+  "Execute a Modus plan through the Executor workflow.",
+  "The Modus command hook resolves the plan in this order: explicit /exec path, .modus/current-plan pointer, then a single newest Markdown plan in .modus/plans by mtime.",
+  "If resolution fails, it returns actionable usage instead of guessing.",
+].join("\n")
+
 export function createConfigHook() {
   return async (config: Config): Promise<void> => {
     const agents = (config.agent ??= {})
+    const commands = (config.command ??= {})
+
+    commands.exec = {
+      template: EXEC_COMMAND_TEMPLATE,
+      description: "Execute a Modus plan with the Executor agent. Usage: /exec [plan-path]",
+      agent: "executor",
+    }
 
     for (const name of DEFAULT_OPENCODE_AGENTS) {
       const agent = agents[name]
