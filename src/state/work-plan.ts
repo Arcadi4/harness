@@ -166,6 +166,7 @@ interface SectionRange {
 
 interface UpdateOptions {
   readonly evidenceRefs?: readonly string[]
+  readonly note?: string
   readonly now?: Date
 }
 
@@ -547,13 +548,19 @@ function updateTaskMarkdown(markdown: string, taskId: string, options: UpdateOpt
   lines[index] = `${withoutPreviousEvidence}${suffix}`
 
   if (evidenceRefs.length > 0) {
-    insertTaskEvidenceRefs(lines, index, evidenceRefs, options.now ?? new Date())
+    insertTaskEvidenceRefs(lines, index, evidenceRefs, options.now ?? new Date(), options.note)
   }
 
   return lines.join("\n")
 }
 
-function insertTaskEvidenceRefs(lines: string[], checkboxIndex: number, evidenceRefs: readonly string[], now: Date): void {
+function insertTaskEvidenceRefs(
+  lines: string[],
+  checkboxIndex: number,
+  evidenceRefs: readonly string[],
+  now: Date,
+  note?: string,
+): void {
   const taskStart = findHeadingBefore(lines, checkboxIndex, "### Task ")
   if (taskStart === -1) {
     return
@@ -564,7 +571,8 @@ function insertTaskEvidenceRefs(lines: string[], checkboxIndex: number, evidence
     return
   }
   const insertAt = findHeadingAfter(lines, evidenceHeading + 1, "#### ")
-  const stampedRefs = evidenceRefs.map((ref) => `- Completed ${now.toISOString()}: \`${ref}\``)
+  const noteSuffix = note ? ` — ${note}` : ""
+  const stampedRefs = evidenceRefs.map((ref) => `- Completed ${now.toISOString()}: \`${ref}\`${noteSuffix}`)
   const existing = new Set(lines.slice(evidenceHeading + 1, insertAt))
   const additions = stampedRefs.filter((line) => !existing.has(line))
   if (additions.length > 0) {
