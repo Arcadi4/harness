@@ -11,7 +11,7 @@ const source: GeneratedFileMeta = {
 }
 
 const descriptor: OpenCodeAgentDescriptor = {
-  id: "arcadia-tester",
+  id: "harness-tester",
   roleId: "role:tester",
   description: "Checks implementation behavior without taking ownership.",
   category: "subagent",

@@ -1,7 +1,7 @@
 import type { ToolDescriptor } from "../schema"
 
 export const exampleToolDescriptor: ToolDescriptor = {
-  id: "arcadia.tool.harness-context",
+  id: "harness.tool.harness-context",
   kind: "tool",
   surface: "tool",
   title: "Harness Context Tool",

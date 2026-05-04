@@ -52,11 +52,11 @@ export const tuiCommandDescriptors: readonly CommandDescriptor[] = [exampleComma
 
 export const tuiRouteDescriptors: readonly TuiRouteDescriptor[] = [
   {
-    id: "arcadia.route.context",
+    id: "harness.route.context",
     title: "Harness Context Route",
     description: "Placeholder descriptor for a future host-registered TUI route.",
     surface: "tui.route",
-    path: "/arcadia/context",
+    path: "/harness/context",
     safety: tuiSafePlaceholderSafety,
     experimental: false,
   },
@@ -64,7 +64,7 @@ export const tuiRouteDescriptors: readonly TuiRouteDescriptor[] = [
 
 export const tuiToastDescriptors: readonly TuiToastDescriptor[] = [
   {
-    id: "arcadia.toast.status",
+    id: "harness.toast.status",
     title: "Harness Status Toast",
     description: "Placeholder descriptor for future TUI toast notifications.",
     surface: "tui.toast",
@@ -76,7 +76,7 @@ export const tuiToastDescriptors: readonly TuiToastDescriptor[] = [
 
 export const tuiFixedSlotDescriptors: readonly TuiFixedSlotDescriptor[] = [
   {
-    id: "arcadia.slot.home-footer",
+    id: "harness.slot.home-footer",
     title: "Harness Home Footer Slot",
     description: "Placeholder descriptor for the host-defined home_footer TUI slot.",
     surface: "tui.fixed-slot",

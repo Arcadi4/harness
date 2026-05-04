@@ -7,7 +7,7 @@ import type { GeneratedFileMeta } from "./types"
  * Renders capability/profile data as recommendation metadata, not policy enforcement.
  */
 export interface OpenCodeAgentDescriptor {
-  /** Unique identifier with arcadia-* prefix to avoid native agent name collisions */
+  /** Unique identifier with harness-* prefix to avoid native agent name collisions */
   id: string
   /** Original role identifier */
   roleId: string
@@ -27,7 +27,7 @@ export interface OpenCodeAgentDescriptor {
 
 /**
  * Generates OpenCode agent descriptors from role manifests.
- * Each descriptor uses arcadia-* prefix to avoid native agent name collisions.
+ * Each descriptor uses harness-* prefix to avoid native agent name collisions.
  */
 export function generateOpenCodeDescriptors(): OpenCodeAgentDescriptor[] {
   return roleManifestList.map((manifest) => mapManifestToDescriptor(manifest))
@@ -37,7 +37,7 @@ export function generateOpenCodeDescriptors(): OpenCodeAgentDescriptor[] {
  * Maps a single role manifest to an OpenCode agent descriptor.
  */
 function mapManifestToDescriptor(manifest: RoleManifest): OpenCodeAgentDescriptor {
-  const id = `arcadia-${manifest.name}`
+  const id = `harness-${manifest.name}`
 
   return {
     id,
@@ -90,13 +90,13 @@ export function validateDescriptorCount(descriptors: OpenCodeAgentDescriptor[]):
 }
 
 /**
- * Validates all descriptor IDs have arcadia- prefix.
+ * Validates all descriptor IDs have harness- prefix.
  */
 export function validateHarnessPrefix(descriptors: OpenCodeAgentDescriptor[]): {
   valid: boolean
   invalidIds: string[]
 } {
-  const invalidIds = descriptors.filter((d) => !d.id.startsWith("arcadia-")).map((d) => d.id)
+  const invalidIds = descriptors.filter((d) => !d.id.startsWith("harness-")).map((d) => d.id)
 
   return {
     valid: invalidIds.length === 0,

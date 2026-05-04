@@ -1,7 +1,7 @@
 import type { CommandDescriptor } from "../schema"
 
 export const exampleCommandDescriptor: CommandDescriptor = {
-  id: "arcadia.command.show-context",
+  id: "harness.command.show-context",
   kind: "command",
   surface: "tui.command",
   title: "Show Harness Context",
@@ -22,7 +22,7 @@ export const exampleCommandDescriptor: CommandDescriptor = {
   experimental: false,
   manifest: {},
   command: {
-    name: "arcadia.show-context",
+    name: "harness.show-context",
     usage: "Open the harness context command from a host command surface.",
   },
 }

@@ -1,7 +1,7 @@
 import type { HookDescriptor } from "../schema"
 
 export const exampleHookDescriptor: HookDescriptor = {
-  id: "arcadia.hook.shell-env",
+  id: "harness.hook.shell-env",
   kind: "hook",
   surface: "shell.env",
   title: "Shell Environment Hook",
