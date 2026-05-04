@@ -2,7 +2,7 @@ import { access, mkdir, readdir, readFile, rm, writeFile } from "node:fs/promise
 import { tmpdir } from "node:os"
 import path from "node:path"
 
-import { describe, expect, it } from "vitest"
+import { describe, expect, it } from "bun:test"
 
 import {
   buildLauncherState,
@@ -235,7 +235,7 @@ describe("explicit agent sync safety", () => {
     const { buildExplicitAgentSyncPlan, syncExplicitAgentDefinitions } = await loadExplicitSyncApi()
     const root = path.join(tmpdir(), `harness-explicit-force-${Date.now()}`)
     const agentsDir = path.join(root, "agents")
-    const targetFile = path.join(agentsDir, "arcadia-architect.md")
+    const targetFile = path.join(agentsDir, "harness-architect.md")
     await mkdir(agentsDir, { recursive: true })
     await writeFile(targetFile, "user-owned content\n")
 
