@@ -8,9 +8,7 @@ export function logDCPDecision(result: DCPDecisionResult): void {
   if ("detected" in result) {
     const status = result.detected ? "detected" : "skipped"
     const paths = uniquePaths(
-      result.signals
-        .map((signal) => signal.path)
-        .filter((path): path is string => Boolean(path))
+      result.signals.map((signal) => signal.path).filter((path): path is string => Boolean(path))
     )
     const pathSuffix = paths.length > 0 ? `: ${paths.join(", ")}` : ""
     const reason = result.reason ? ` — ${result.reason}` : ""

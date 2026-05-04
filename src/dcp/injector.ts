@@ -65,14 +65,9 @@ function hasDCPPluginReference(plugins: string[], dcpPluginPath: string): boolea
   }
 
   // Check for any reference containing the DCP submodule path
-  const dcpIndicators = [
-    "opencode-dynamic-context-pruning",
-    "dynamic-context-pruning",
-  ]
+  const dcpIndicators = ["opencode-dynamic-context-pruning", "dynamic-context-pruning"]
 
-  return plugins.some((plugin) =>
-    dcpIndicators.some((indicator) => plugin.includes(indicator))
-  )
+  return plugins.some((plugin) => dcpIndicators.some((indicator) => plugin.includes(indicator)))
 }
 
 /**
@@ -111,9 +106,7 @@ async function readTuiConfig(configPath: string): Promise<TuiConfig> {
  * @param options - Injection options including configDir
  * @returns Result object with status and details
  */
-export async function injectDCP(
-  options: DCPInjectorOptions
-): Promise<DCPInjectionResult> {
+export async function injectDCP(options: DCPInjectorOptions): Promise<DCPInjectionResult> {
   const { configDir } = options
   const rootDir = options.rootDir ?? process.cwd()
   const submodulePath = options.submodulePath ?? DEFAULT_DCP_SUBMODULE_PATH
@@ -199,9 +192,7 @@ export async function injectDCP(
  * @param options - Injection options including configDir
  * @returns Result object with status and details
  */
-export async function removeDCP(
-  options: DCPInjectorOptions
-): Promise<DCPInjectionResult> {
+export async function removeDCP(options: DCPInjectorOptions): Promise<DCPInjectionResult> {
   const { configDir } = options
   const rootDir = options.rootDir ?? process.cwd()
   const submodulePath = options.submodulePath ?? DEFAULT_DCP_SUBMODULE_PATH

@@ -2,7 +2,6 @@ import { describe, it, expect } from "vitest"
 import { HarnessPluginConfigSchema } from "./config"
 
 describe("HarnessPluginConfig", () => {
-
   describe("invalid config rejection", () => {
     it("rejects invalid promptVerbosity value", () => {
       const result = HarnessPluginConfigSchema.safeParse({ promptVerbosity: "debug" })
@@ -19,5 +18,4 @@ describe("HarnessPluginConfig", () => {
       expect(result.success).toBe(false)
     })
   })
-
 })

@@ -82,7 +82,6 @@ describe("normalizePluginConfig", () => {
       json: '{\n  "plugin": [\n    "other-plugin"\n  ],\n  "theme": "dark"\n}\n',
     })
   })
-
 })
 
 describe("buildLauncherState", () => {
@@ -113,7 +112,6 @@ describe("buildLauncherState", () => {
     expect(state.env.XDG_DATA_HOME).toBe("/repo/harness/.opencode-dev/data")
     expect(state.env.XDG_CACHE_HOME).toBe("/repo/harness/.opencode-dev/cache")
   })
-
 })
 
 describe("ensureIsolatedProfile", () => {

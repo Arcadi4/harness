@@ -30,7 +30,7 @@ const DcpDetectionPolicySchema = z.preprocess(
   z.object({
     mode: z.enum(["any-signal"]).default("any-signal"),
     phase: z.enum(["launch-time"]).default("launch-time"),
-  }),
+  })
 )
 
 const DcpSettingsSchema = z.object({

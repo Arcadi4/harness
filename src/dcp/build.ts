@@ -23,9 +23,7 @@ export type EnsureDCPBuildOptions = {
   submodulePath?: string
 }
 
-export async function ensureDCPBuild(
-  options: EnsureDCPBuildOptions = {},
-): Promise<DCPBuildStatus> {
+export async function ensureDCPBuild(options: EnsureDCPBuildOptions = {}): Promise<DCPBuildStatus> {
   const rootDir = options.rootDir ?? process.cwd()
   const submodulePath = options.submodulePath ?? DEFAULT_SUBMODULE_PATH
   const pinnedTag = options.pinnedTag ?? DEFAULT_PINNED_TAG
@@ -42,9 +40,7 @@ export async function ensureDCPBuild(
   }
 
   if (tag.value !== pinnedTag) {
-    return unavailable(
-      `DCP submodule tag mismatch: expected ${pinnedTag}, found ${tag.value}`,
-    )
+    return unavailable(`DCP submodule tag mismatch: expected ${pinnedTag}, found ${tag.value}`)
   }
 
   if (await pathExists(entrypointPath)) {
@@ -69,7 +65,7 @@ export async function ensureDCPBuild(
 }
 
 async function getExactTag(
-  cwd: string,
+  cwd: string
 ): Promise<{ ok: true; value: string } | { message: string; ok: false }> {
   const result = await runCommand(["git", "describe", "--tags", "--exact-match", "HEAD"], cwd)
   if (!result.ok) return result
@@ -80,7 +76,7 @@ async function getExactTag(
 
 async function runCommand(
   command: string[],
-  cwd: string,
+  cwd: string
 ): Promise<{ ok: true; stdout: string } | { message: string; ok: false }> {
   try {
     const child = Bun.spawn(command, {
