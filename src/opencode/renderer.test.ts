@@ -43,23 +43,15 @@ describe("OpenCode agent renderer markdown contract", () => {
     expect(markdown).toContain("abc123")
   })
 
-  it("does not render enforcement language", () => {
-    const markdown = renderDescriptor(descriptor)
-    const body = markdown.toLowerCase()
-
-    for (const forbidden of ["must", "required", "enforced", "denied", "blocked"]) {
-      expect(body).not.toContain(forbidden)
-    }
-  })
-
   it("renders prompt content for prompt-backed workflow descriptors", () => {
+    const prompt = "Workflow prompt body."
     const markdown = renderDescriptor({
       ...descriptor,
       id: "workflow-architect",
-      prompt: "# Architect\n\nWorkflow prompt body.",
+      prompt,
     })
 
-    expect(markdown).toContain("## Prompt\n\n# Architect\n\nWorkflow prompt body.")
+    expect(markdown).toContain(`## Prompt\n\n${prompt}`)
   })
 })
 

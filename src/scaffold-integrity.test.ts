@@ -25,7 +25,6 @@ describe("scaffold integrity", () => {
           requiresConfirmation: false,
         },
         experimental: false,
-        capabilities: [],
         manifest: {},
       }
 
@@ -96,7 +95,6 @@ describe("scaffold integrity", () => {
           requiresConfirmation: false,
         },
         experimental: true,
-        capabilities: [],
         manifest: {},
       })
       expect(result.success).toBe(false)
@@ -121,7 +119,6 @@ describe("scaffold integrity", () => {
           requiresConfirmation: false,
         },
         experimental: false,
-        capabilities: [],
         manifest: {},
       })
       expect(result.success).toBe(false)

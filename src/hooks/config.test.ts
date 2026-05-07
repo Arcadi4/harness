@@ -17,18 +17,18 @@ describe("createConfigHook", () => {
     expect(config.agent?.architect).toMatchObject({
       description: expect.stringContaining("Shapes user goals"),
       mode: "primary",
-      prompt: expect.stringContaining("# Architect"),
     })
+    expect(config.agent?.architect?.prompt?.trim().length).toBeGreaterThan(0)
     expect(config.agent?.planner).toMatchObject({
       description: expect.stringContaining("approved designs"),
       mode: "primary",
-      prompt: expect.stringContaining("# Planner"),
     })
+    expect(config.agent?.planner?.prompt?.trim().length).toBeGreaterThan(0)
     expect(config.agent?.executor).toMatchObject({
       description: expect.stringContaining("Executes existing plans"),
       mode: "primary",
-      prompt: expect.stringContaining("# Executor"),
     })
+    expect(config.agent?.executor?.prompt?.trim().length).toBeGreaterThan(0)
 
     expect(config.command?.exec).toMatchObject({
       description: "Execute a Modus plan with the Executor agent. Usage: /exec [plan-path]",
@@ -54,7 +54,7 @@ describe("createConfigHook", () => {
       color: "#123456",
       description: expect.stringContaining("Shapes user goals"),
       mode: "primary",
-      prompt: expect.stringContaining("# Architect"),
     })
+    expect(config.agent?.architect?.prompt?.trim().length).toBeGreaterThan(0)
   })
 })

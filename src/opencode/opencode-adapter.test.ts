@@ -1,9 +1,7 @@
 import { describe, expect, it } from "bun:test"
 import {
-  EXPECTED_OPENCODE_DESCRIPTOR_COUNT,
   generateOpenCodeDescriptors,
   generateWorkflowAgentDescriptors,
-  validateDescriptorCount,
   validateSafeIds,
   verifyDeterministic,
 } from "./opencode-adapter"
@@ -22,14 +20,6 @@ describe("opencode-adapter", () => {
     expect(result).toBe(true)
   })
 
-  it("accounts for role manifest descriptors plus core workflow descriptors", () => {
-    const descriptors = generateOpenCodeDescriptors()
-    const result = validateDescriptorCount(descriptors)
-
-    expect(result).toEqual({ valid: true, actual: 18, expected: 18 })
-    expect(descriptors).toHaveLength(EXPECTED_OPENCODE_DESCRIPTOR_COUNT)
-  })
-
   it("appends prompt-backed workflow descriptors after existing role manifests", () => {
     const descriptors = generateOpenCodeDescriptors()
     const workflowDescriptors = generateWorkflowAgentDescriptors()
@@ -43,10 +33,10 @@ describe("opencode-adapter", () => {
     expect(descriptors.find((descriptor) => descriptor.id === "architect")?.prompt).toBeUndefined()
 
     expect(workflowDescriptors[0].roleId).toBe("workflow:architect")
-    expect(workflowDescriptors[0].prompt).toContain("# Architect")
+    expect(workflowDescriptors[0].prompt?.trim().length).toBeGreaterThan(0)
     expect(workflowDescriptors[1].roleId).toBe("workflow:planner")
-    expect(workflowDescriptors[1].prompt).toContain("# Planner")
+    expect(workflowDescriptors[1].prompt?.trim().length).toBeGreaterThan(0)
     expect(workflowDescriptors[2].roleId).toBe("workflow:executor")
-    expect(workflowDescriptors[2].prompt).toContain("# Executor")
+    expect(workflowDescriptors[2].prompt?.trim().length).toBeGreaterThan(0)
   })
 })

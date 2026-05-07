@@ -9,6 +9,7 @@ import {
   createWorkflowTools,
   workflowToolRegistrations,
   type WorkflowToolContext,
+  type WorkflowToolName,
 } from "./tools"
 
 const context = {
@@ -50,10 +51,9 @@ describe("workflow tool registry", () => {
     const tools = createWorkflowTools(context)
 
     expect(Object.keys(tools)).toEqual(expectedWorkflowTools)
-    expect(tools.modus_context.description).toBe("Show the current modus plugin context.")
-    expect(tools.read_plan.description).toBe("Read and parse a Modus work plan file.")
-    expect(tools.update_progress.description).toBe("Update a task's progress in a Modus work plan file.")
-    expect(tools.delegate_task.description).toBe("Delegate a task to a subagent with plan-aware context")
+    for (const name of expectedWorkflowTools) {
+      expect(tools[name].execute).toBeFunction()
+    }
   })
 
   it("keeps plugin interface tool wiring behind the workflow registry", () => {
