@@ -44,6 +44,6 @@ export const RoleManifestSchema = z.object({
 export type RoleManifestInput = z.input<typeof RoleManifestSchema>
 export type RoleManifest = z.output<typeof RoleManifestSchema> & { readonly id: RoleId }
 
-export function defineRoleManifest(manifest: RoleManifestInput): RoleManifest {
+export function defineRoleManifest(manifest: unknown): RoleManifest {
   return RoleManifestSchema.parse(manifest) as RoleManifest
 }

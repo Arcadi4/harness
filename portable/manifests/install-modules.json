@@ -1,0 +1,64 @@
+{
+  "version": 1,
+  "modules": [
+    {
+      "id": "portable-workflow",
+      "kind": "workflow",
+      "description": "Portable Architect, Planner, and Executor workflow prompts and role docs.",
+      "paths": [
+        "portable/prompts/workflow",
+        "docs/drafts/agent-roles.md",
+        "docs/drafts/features.md"
+      ],
+      "targets": ["opencode", "codex", "claude", "cursor"],
+      "dependencies": ["portable-roles"],
+      "defaultInstall": true,
+      "cost": "light",
+      "stability": "stable"
+    },
+    {
+      "id": "portable-roles",
+      "kind": "roles",
+      "description": "Portable primary and subagent role manifests.",
+      "paths": ["portable/roles"],
+      "targets": ["opencode", "codex", "claude", "cursor"],
+      "dependencies": [],
+      "defaultInstall": true,
+      "cost": "light",
+      "stability": "stable"
+    },
+    {
+      "id": "portable-skills",
+      "kind": "skills",
+      "description": "Portable Modus skill documents that do not depend on OpenCode runtime hooks.",
+      "paths": ["portable/skills"],
+      "targets": ["opencode", "codex", "claude", "cursor"],
+      "dependencies": [],
+      "defaultInstall": true,
+      "cost": "light",
+      "stability": "stable"
+    },
+    {
+      "id": "opencode-runtime",
+      "kind": "runtime",
+      "description": "OpenCode plugin hooks, tools, command hooks, shell env hooks, and config injection.",
+      "paths": ["src/opencode", "src/hooks", "src/workflow", "src/dcp"],
+      "targets": ["opencode"],
+      "dependencies": ["portable-workflow", "portable-roles"],
+      "defaultInstall": true,
+      "cost": "medium",
+      "stability": "stable"
+    },
+    {
+      "id": "opencode-customization",
+      "kind": "customization",
+      "description": "OpenCode agent sync templates, dev config, TUI/server entrypoints, and runtime customization surfaces.",
+      "paths": [".opencode", ".opencode-dev", "src/server.ts", "src/tui.ts"],
+      "targets": ["opencode"],
+      "dependencies": ["opencode-runtime"],
+      "defaultInstall": false,
+      "cost": "medium",
+      "stability": "beta"
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "components": [
+    {
+      "id": "baseline:portable",
+      "family": "baseline",
+      "description": "Portable Modus roles, workflow prompts, and lightweight skills.",
+      "modules": ["portable-roles", "portable-workflow", "portable-skills"]
+    },
+    {
+      "id": "target:opencode-runtime",
+      "family": "target",
+      "description": "OpenCode runtime plugin behavior backed by portable Modus assets.",
+      "modules": ["opencode-runtime"]
+    },
+    {
+      "id": "target:opencode-customization",
+      "family": "target",
+      "description": "Deeper OpenCode-specific configuration and local development customization.",
+      "modules": ["opencode-customization"]
+    }
+  ]
+}

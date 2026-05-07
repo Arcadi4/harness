@@ -1,4 +1,5 @@
 export * from "./types"
+export { ModusPlugin, default } from "./plugin"
 
 export type {
   TargetConfig,

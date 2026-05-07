@@ -7,12 +7,25 @@
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "files": [
-    "dist"
+    "dist",
+    "portable"
   ],
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
+    },
+    "./core": {
+      "types": "./dist/core/index.d.ts",
+      "import": "./dist/core/index.js"
+    },
+    "./opencode": {
+      "types": "./dist/opencode/index.d.ts",
+      "import": "./dist/opencode/index.js"
+    },
+    "./portable": {
+      "types": "./dist/portable/index.d.ts",
+      "import": "./dist/portable/index.js"
     }
   },
   "scripts": {
@@ -23,7 +36,7 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "test": "bun test src/ scripts/",
-    "build": "rm -rf dist && $npm_execpath build src/index.ts --outdir dist --target bun --format esm && $npm_execpath build src/server.ts --outdir dist --target bun --format esm && $npm_execpath build src/tui.ts --outdir dist --target bun --format esm && tsc --emitDeclarationOnly",
+    "build": "rm -rf dist && $npm_execpath build src/index.ts src/server.ts src/tui.ts src/core/index.ts src/opencode/index.ts src/portable/index.ts --outdir dist --target bun --format esm && tsc --emitDeclarationOnly",
     "verify": "$npm_execpath run format:check && $npm_execpath run lint && $npm_execpath run typecheck && $npm_execpath run test && $npm_execpath run build",
     "clean": "rm -rf dist",
     "prepare": "$npm_execpath run build",

@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "profiles": {
+    "portable": {
+      "description": "Portable Modus docs/config only, without OpenCode runtime behavior.",
+      "modules": ["portable-roles", "portable-workflow", "portable-skills"]
+    },
+    "opencode": {
+      "description": "Default OpenCode plugin runtime using portable Modus assets.",
+      "modules": ["portable-roles", "portable-workflow", "portable-skills", "opencode-runtime"]
+    },
+    "opencode-dev": {
+      "description": "OpenCode runtime plus local development customization and generated config surfaces.",
+      "modules": [
+        "portable-roles",
+        "portable-workflow",
+        "portable-skills",
+        "opencode-runtime",
+        "opencode-customization"
+      ]
+    }
+  }
+}
